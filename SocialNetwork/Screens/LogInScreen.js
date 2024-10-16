@@ -1,34 +1,91 @@
-import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground } from 'react-native';
+import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator} from 'react-native';
+import React, { useState } from 'react';
 
-export default function LogInScreen(){
+
+export default function LogInScreen( {navigation} ){
+    const [bgColor, setBgColor] = useState('transparent'); // Default background color
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [load, isLoading] = useState(false);
+
+    const manageLogin = async () => {
+        setErrorMessage('');
+        isLoading(true);
+
+        try {
+    
+            const response = await fetch('https://social-network-v7j7.onrender.com/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+    
+            const data = await response.json();
+    
+            if(response.ok){
+                navigation.navigate('Feed', {
+                    token: data.token,
+                    userId: data.userId,
+                    username: data.username
+                })
+            } else {
+                setErrorMessage('Invalid login credentials.')
+            }
+    
+        } catch (error){
+            setErrorMessage('Something went wrong. Try again.')
+        }
+
+        isLoading(false);
+    }
+
     return (
       <View style={styles.wholePage}>
         <ImageBackground source={require('../assets/whatsappDanger.jpg')} resizeMode='cover' style={styles.image}>
             <View style={styles.content}>
+
                 <Text style = {styles.welcomeText}> Welcome! </Text>
 
                 <TextInput
                     style={styles.inputBox}
-                    //value={email}
-                    //onChangeText={onChangeEmail}
+                    value={email}
+                    onChangeText={setEmail}
                     placeholder={'Email'}
                 />
 
                 <TextInput
                     style={styles.inputBox}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={true}
                     placeholder={'Password'}
                 />
 
-                <Pressable style={styles.logInButton}>
+                <Pressable style={styles.logInButton} onPress={manageLogin}>
                     <Text style={styles.textButton}>Log In</Text>
                 </Pressable>
                 
                 <View style={styles.signUpContainer}>
                     <Text style={styles.question}>Don't have an account?</Text>
-                    <Pressable style={styles.pressableSignUp}>
+                    <Pressable 
+                        style={[styles.pressableSignUp, { backgroundColor: bgColor }]}
+                        onPressIn={() => setBgColor('#bbbbff')}
+                        onPressOut={()=> setBgColor('transparent')}
+                        onPress={() => {navigation.navigate('Sign Up')}}
+                    >
                         <Text style={styles.signUp}>Sign Up</Text>
                     </Pressable>
                 </View>
+
+                {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+                {load ? <ActivityIndicator style={styles.loader} /> : null}
+
             </View>
         </ ImageBackground>
       </View>
@@ -86,5 +143,14 @@ const styles = StyleSheet.create({
     },
     signUp: {
         color: '#0073ff'
+    },
+    errorMessage: {
+        color: 'red',
+        marginTop: 15,
+        fontWeight: 'bold',
+        fontSize: 16
+    },
+    loader: {
+        margin: 15
     }
 });
