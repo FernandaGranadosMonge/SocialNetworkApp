@@ -29,7 +29,7 @@ export default function LogInScreen( {navigation} ){
             const data = await response.json();
     
             if(response.ok){
-                navigation.navigate('Feed', {
+                navigation.navigate('All Posts', {
                     token: data.token,
                     userId: data.userId,
                     username: data.username

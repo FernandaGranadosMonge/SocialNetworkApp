@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 
-const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjg5LCJpYXQiOjE3MjkwMzYxMjEsImV4cCI6MTcyOTA0MzMyMX0.BiY2Un0nWUWyIBQQI7ije5o4t5uvNrn9eE1S2orJDGY';
-
-export default function PostsScreen() {
+export default function PostsScreen({ route }) {
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
+    const { token, userId, username} = route.params;
+
 
     const getPosts = async () => {
         try {
@@ -13,7 +13,7 @@ export default function PostsScreen() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${API_KEY}`,
+                    Authorization: `Bearer ${token}`,
                 },
             };
 
