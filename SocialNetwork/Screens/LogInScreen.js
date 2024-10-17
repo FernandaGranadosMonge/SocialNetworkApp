@@ -14,7 +14,6 @@ export default function LogInScreen( {navigation} ){
         isLoading(true);
 
         try {
-    
             const response = await fetch('https://social-network-v7j7.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: {
@@ -22,23 +21,27 @@ export default function LogInScreen( {navigation} ){
                 },
                 body: JSON.stringify({
                     email: email,
-                    password: password
+                    password: password,
                 })
             });
-    
+            
             const data = await response.json();
-    
+
             if(response.ok){
-                navigation.navigate('All Posts', {
-                    token: data.token,
-                    userId: data.userId,
-                    username: data.username
-                })
+                navigation.navigate('Main App', {
+                    screen: 'All Posts', 
+                    params: {
+                        token: data.token,
+                        userId: data.userId,
+                        username: data.username
+                    }
+                });
             } else {
                 setErrorMessage('Invalid login credentials.')
             }
     
         } catch (error){
+            console.error('Request failed: ', error)
             setErrorMessage('Something went wrong. Try again.')
         }
 

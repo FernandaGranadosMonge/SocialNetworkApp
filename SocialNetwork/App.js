@@ -2,19 +2,40 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import LogInScreen from './Screens/LogInScreen';
 import SignUpScreen from './Screens/SignUpScreen';
 import PostsScreen from './Screens/postsScreen';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function AppTabNavigator() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen 
+        name="All Posts" 
+        component={PostsScreen} 
+        options={{
+          headerTitleAlign: "center",
+          tabBarIcon: ({color})=>(
+            <Ionicons name="home" color={color} size={20} />
+          )
+        }}
+      />
+      
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={styles.screenTitle}>
         <Stack.Screen name="Log In" component={LogInScreen} />
-        <Stack.Screen name="Sign Up" component={SignUpScreen} />
-        <Stack.Screen name="All Posts" component={PostsScreen} />
+        <Stack.Screen name="Sign Up" component={SignUpScreen} options={styles.noBackButton} />
+        <Stack.Screen name="Main App" component={AppTabNavigator} options={styles.noHeader} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -22,6 +43,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   screenTitle: {
-    headerTitleAlign: "center"
+    headerTitleAlign: "center",
   },
+  noHeader: {
+    headerShown: false
+  },
+  noBackButton: {
+    headerBackVisible: false
+  }
 });

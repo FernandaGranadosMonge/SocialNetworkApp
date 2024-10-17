@@ -33,32 +33,6 @@ export default function PostsScreen({ route }) {
         getPosts();
     }, []);
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: 10,
-        },
-        postContainer: {
-            padding: 10,
-            borderBottomWidth: 1,
-            borderColor: '#ccc',
-        },
-        postTitle: {
-            fontSize: 18,
-            fontWeight: 'bold',
-        },
-        postAuthor: {
-            fontStyle: 'italic',
-            marginVertical: 5,
-        },
-        noPostsText: {
-            textAlign: 'center',
-            fontSize: 16,
-            marginVertical: 20,
-        },
-    });
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -86,3 +60,30 @@ export default function PostsScreen({ route }) {
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    postContainer: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
+    },
+    postTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    postAuthor: {
+        fontStyle: 'italic',
+        marginVertical: 5,
+    },
+    noPostsText: {
+        textAlign: 'center',
+        fontSize: 16,
+        marginVertical: 20,
+    },
+});
