@@ -13,7 +13,12 @@ const Tab = createBottomTabNavigator();
 
 function AppTabNavigator() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator 
+      screenOptions={{
+        tabBarActiveTintColor: '#0073ff',
+        tabBarInactiveTintColor: '#cccccc',
+      }}
+    >
       <Tab.Screen 
         name="All Posts" 
         component={PostsScreen} 
@@ -23,6 +28,7 @@ function AppTabNavigator() {
             <Ionicons name="home" color={color} size={20} />
           )
         }}
+        
       />
       
     </Tab.Navigator>

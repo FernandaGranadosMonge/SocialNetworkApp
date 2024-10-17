@@ -1,6 +1,8 @@
-import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator} from 'react-native';
+import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions} from 'react-native';
 import React, { useState } from 'react';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function LogInScreen( {navigation} ){
     const [bgColor, setBgColor] = useState('transparent'); // Default background color
@@ -50,8 +52,8 @@ export default function LogInScreen( {navigation} ){
 
     return (
       <View style={styles.wholePage}>
-        <ImageBackground source={require('../assets/whatsappDanger.jpg')} resizeMode='cover' style={styles.image}>
-            <View style={styles.content}>
+        <ImageBackground source={require('../assets/whatsappDanger.jpg')} style={styles.image}>
+            <ScrollView contentContainerStyle={styles.content}>
 
                 <Text style = {styles.welcomeText}> Welcome! </Text>
 
@@ -89,7 +91,7 @@ export default function LogInScreen( {navigation} ){
                 {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
                 {load ? <ActivityIndicator style={styles.loader} /> : null}
 
-            </View>
+            </ScrollView>
         </ ImageBackground>
       </View>
     );
@@ -100,7 +102,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     image: {
-        flex: 1
+        flex: 1,
+        width: windowWidth,
+        height: windowHeight,
     },
     content: {
         flex: 1,
