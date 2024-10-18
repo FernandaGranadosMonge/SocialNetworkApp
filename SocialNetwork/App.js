@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { AuthProvider } from './Components/Context';
 import LogInScreen from './Screens/LogInScreen';
 import SignUpScreen from './Screens/SignUpScreen';
 import PostsScreen from './Screens/postsScreen';
@@ -60,13 +61,15 @@ function AppTabNavigator() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={styles.screenTitle}>
-        <Stack.Screen name="Log In" component={LogInScreen} />
-        <Stack.Screen name="Sign Up" component={SignUpScreen} options={styles.noBackButton} />
-        <Stack.Screen name="Main App" component={AppTabNavigator} options={styles.noHeader} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={styles.screenTitle}>
+          <Stack.Screen name="Log In" component={LogInScreen} />
+          <Stack.Screen name="Sign Up" component={SignUpScreen} options={styles.noBackButton} />
+          <Stack.Screen name="Main App" component={AppTabNavigator} options={styles.noHeader} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 

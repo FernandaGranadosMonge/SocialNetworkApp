@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable } from 'react-native';
+import { AuthContext } from '../Components/Context';
 
 import Post from '../Components/Post';
 
-export default function PostsScreen({ route }) {
+export default function PostsScreen() {
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
-    const { token, userId, username } = route.params;
+    const { token, userId, username } = useContext(AuthContext);
     const [page, setPage] = useState(1);
     const [isMoreData, setIsMoreData] = useState(true);
 

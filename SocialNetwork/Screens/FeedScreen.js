@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { AuthContext } from '../Components/Context';
 
-export default function FeedScreen({ route }) {
+export default function FeedScreen() {
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
-    const { token, userId, username} = route.params;
+    const { token, userId, username} = useContext(AuthContext);
 
 
     const getPosts = async () => {

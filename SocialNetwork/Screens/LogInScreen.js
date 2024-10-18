@@ -1,5 +1,6 @@
 import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions} from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../Components/Context';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -10,6 +11,7 @@ export default function LogInScreen( {navigation} ){
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [load, isLoading] = useState(false);
+    const {setToken, setUserId, setUsername} = useContext(AuthContext);
 
     const manageLogin = async () => {
         setErrorMessage('');
@@ -30,13 +32,11 @@ export default function LogInScreen( {navigation} ){
             const data = await response.json();
 
             if(response.ok){
+                setToken(data.token);
+                setUserId(data.userId);
+                setUsername(data.username);
                 navigation.navigate('Main App', {
                     screen: 'All Posts', 
-                    params: {
-                        token: data.token,
-                        userId: data.userId,
-                        username: data.username
-                    }
                 });
             } else {
                 setErrorMessage('Invalid login credentials.')
