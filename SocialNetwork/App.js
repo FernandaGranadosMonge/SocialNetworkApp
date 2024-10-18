@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import LogInScreen from './Screens/LogInScreen';
 import SignUpScreen from './Screens/SignUpScreen';
 import PostsScreen from './Screens/postsScreen';
+import FeedScreen from './Screens/FeedScreen';
+import ProfileScreen from './Screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,7 +30,28 @@ function AppTabNavigator() {
             <Ionicons name="home" color={color} size={20} />
           )
         }}
-        
+      />
+
+      <Tab.Screen 
+        name="Feed" 
+        component={FeedScreen} 
+        options={{
+          headerTitleAlign: "center",
+          tabBarIcon: ({color})=>(
+            <Ionicons name="people" color={color} size={20} />
+          )
+        }}
+      />
+
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        options={{
+          headerTitleAlign: "center",
+          tabBarIcon: ({color})=>(
+            <Ionicons name="person" color={color} size={20} />
+          )
+        }}
       />
       
     </Tab.Navigator>

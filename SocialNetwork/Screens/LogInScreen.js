@@ -89,7 +89,7 @@ export default function LogInScreen( {navigation} ){
                 </View>
 
                 {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-                {load ? <ActivityIndicator style={styles.loader} /> : null}
+                {load ? <ActivityIndicator style={styles.loader} size={'small'} color={'#a0a0ff'}/> : null}
 
             </ScrollView>
         </ ImageBackground>
@@ -159,5 +159,6 @@ const styles = StyleSheet.create({
     },
     loader: {
         margin: 15
+        
     }
 });
