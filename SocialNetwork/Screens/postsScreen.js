@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable } from 'react-native';
 
 import Post from '../Components/Post';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function PostsScreen({ route }) {
     const [isLoading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ export default function PostsScreen({ route }) {
         }
     };
 
+
     useEffect(() => {
         getPosts();
     }, [page]);
@@ -56,15 +58,15 @@ export default function PostsScreen({ route }) {
                 <FlatList
                     data={posts}
                     keyExtractor={({ id }) => id.toString()}
-                    onEndReachedThreshold={0.01}
+                    onEndReachedThreshold={0.1}
                     onEndReached={() => setPage((prevPage) => prevPage + 1)}
                     renderItem={({ item }) => (
                         <Post
+                            id={item.user_id}
                             title={item.title}
                             content={item.content}
                             username={item.username}
                             likes={item.likes}
-                            color={randomColor()}
                         />
                     )}
                     ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
