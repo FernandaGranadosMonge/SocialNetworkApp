@@ -1,23 +1,28 @@
-import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator} from 'react-native';
+import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions} from 'react-native';
 import React, { useState } from 'react';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function SignUpScreen( {navigation} ){
-    const [bgColor, setBgColor] = useState('transparent'); // Default background color
+    const [bgColor, setBgColor] = useState('transparent'); 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [load, isLoading] = useState(false);
 
     const manageSignUp = async () => {
         setErrorMessage('');
+        setSuccessMessage('');
+        isLoading(true);
         if(password !== reEnterPassword) {
             setErrorMessage('Passwords do not match.');
-            return; // Prevent the sign-up process from continuing
+            isLoading(false);
+            return;
         }
-        isLoading(true);
         
 
         try {
@@ -37,11 +42,8 @@ export default function SignUpScreen( {navigation} ){
             const data = await response.json();
 
             if(response.ok){
-                navigation.navigate('Log In', {
-                    token: data.token,
-                    userId: data.userId,
-                    username: data.username
-                })
+                setSuccessMessage('Account created succesfully! Please log in.')
+
             } else {
                 if (data.errors.length > 0) {
                     setErrorMessage(data.errors[0].msg); 
@@ -111,8 +113,9 @@ export default function SignUpScreen( {navigation} ){
                         </Pressable>
                     </View>
   
+                    {successMessage ? <Text style={styles.successMessage}>{successMessage}</Text> : null}
                     {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-                    {load ? <ActivityIndicator style={styles.loader} /> : null}
+                    {load ? <ActivityIndicator style={styles.loader} size={'small'} color={'#a0a0ff'}/> : null}
   
                 </View>
             </ ImageBackground>
@@ -125,7 +128,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     image: {
-        flex: 1
+        flex: 1,
+        width: windowWidth,
+        height: windowHeight
     },
     content: {
         flex: 1,
@@ -170,10 +175,18 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     signUp: {
-        color: '#0073ff'
+        color: '#0073ff',
+        fontWeight: 'bold',
     },
     errorMessage: {
         color: 'red',
+        marginTop: 15,
+        marginHorizontal: 20,
+        fontWeight: 'bold',
+        fontSize: 16
+    },
+    successMessage: {
+        color: '#40cf40',
         marginTop: 15,
         marginHorizontal: 20,
         fontWeight: 'bold',

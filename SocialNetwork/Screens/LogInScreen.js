@@ -6,7 +6,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function LogInScreen( {navigation} ){
-    const [bgColor, setBgColor] = useState('transparent'); // Default background color
+    const [bgColor, setBgColor] = useState('transparent'); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -149,7 +149,8 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     signUp: {
-        color: '#0073ff'
+        color: '#0073ff',
+        fontWeight: 'bold',
     },
     errorMessage: {
         color: 'red',

@@ -1,10 +1,125 @@
-import {Text, View } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, SafeAreaView, FlatList, StyleSheet, ActivityIndicator} from 'react-native';
+import AccountInfo from '../Components/AccountInfo';
+import { AuthContext } from '../Components/Context';
+import Post from '../Components/Post';
 
 
 export default function ProfileScreen(){
+    const { token, userId, username } = useContext(AuthContext);
+    const [isLoading, setLoading] = useState(true);
+    const [followerCount, setFollowerCount] = useState('');
+    const [followingCount, setFollowingCount] = useState('');
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [posts, setPosts] = useState([]);
+
+    const getAccountInfo = async () =>{
+        try {
+            const request = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}`, request);
+            const data = await response.json();
+
+            if(response.ok){
+                setFollowerCount(data.follower_count);
+                setFollowingCount(data.following_count)
+                setIsFollowing(data.is_following)
+            }
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+        }
+    };
+
+    const getPosts = async () => {
+
+        try {
+            const request = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}/posts?page=1&limit=10`, request);
+            const dataPosts = await response.json();
+
+            setPosts(dataPosts || []);
+
+        } catch (error) {
+            console.error(error);
+            setPosts([]);
+        } finally {
+        }
+    };
+
+    useEffect(() => {
+        getPosts();
+    }, []);
+
+    getAccountInfo();
+
     return (
-        <View>
-            <Text>Profile Screen</Text>
-        </View>
+        <SafeAreaView>
+            <AccountInfo 
+                currentUserId={userId}
+                id={userId} 
+                username={username} 
+                followerCount={followerCount} 
+                followingCount={followingCount} 
+                isFollowing={isFollowing}
+            />
+
+            <View style={styles.postsContainer}>
+                <Text style={styles.title}>Posts</Text>
+
+                {posts.length > 0 ? (
+                    <FlatList
+                        data={posts}
+                        keyExtractor={({ id }) => id.toString()}
+                        renderItem={({ item }) => (
+                            <Post
+                                title={item.title}
+                                content={item.content}
+                                username={item.username}
+                                likes={item.likes.length}
+                                color={'red'}
+                            />
+                        )}
+                    />
+                    ) : (
+                        <View style={styles.noPostsContainer}>
+                            <Text style={styles.noPostsText}>No posts available</Text>
+                        </View>
+                )}
+            </View>
+        </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    postsContainer: {
+        marginTop: 5,
+    },
+    title: {
+        fontSize: 20,
+        marginLeft: 20,
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    noPostsContainer: {
+        margin: 10,
+        alignSelf: 'center'
+    },
+    noPostsText: {
+        color: 'gray'
+    }
+});
