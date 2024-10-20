@@ -87,11 +87,11 @@ export default function ProfileScreen(){
                         keyExtractor={({ id }) => id.toString()}
                         renderItem={({ item }) => (
                             <Post
+                                id={item.user_id}
                                 title={item.title}
                                 content={item.content}
                                 username={item.username}
-                                likes={item.likes.length}
-                                color={'red'}
+                                likes={item.likes}
                             />
                         )}
                     />
