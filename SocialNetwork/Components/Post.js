@@ -3,11 +3,17 @@ import { Text, View, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const heroImageToken = process.env.EXPO_PUBLIC_KEY;
+const imageCache = {}; 
 
 const getHeroImage = async (id) => {
+    if (imageCache[id]) {
+        return imageCache[id];
+    }
+    
     try {
         const response = await fetch(`https://superheroapi.com/api/${heroImageToken}/${id}/image`);
         const data = await response.json();
+        imageCache[id] = data.url;
         return data.url;
     } catch (error) {
         console.error(error);
@@ -34,26 +40,28 @@ const Post = ({ username, content, likes, liked, id }) => {
         <View style={styles.postContainer}>
             <Text style={styles.postTitle}>{username}</Text>
             <View style={styles.postContent}>
-            {imageUrl ? (
-                imageUrl !== '' ? (
-                    <Image source={{ uri: imageUrl }} style={styles.heroImage} />
+                {imageUrl ? (
+                    imageUrl !== '' ? (
+                        <Image source={{ uri: imageUrl }} style={styles.heroImage} />
+                    ) : (
+                        <Text>Image could not be loaded</Text>
+                    )
                 ) : (
-                    <Text>Image could not be loaded</Text>
-                )
-            ) : (
-                <Text>Loading image...</Text>
-            )}
-                    <Text style={{ flexShrink: 1 }}>{content}</Text>
+                    <Text>Loading image...</Text>
+                )}
+                <Text style={{ flexShrink: 1 }}>{content}</Text>
             </View>
             <View style={styles.postFooter}>
                 <View style={styles.postLikes}>
-                    <Ionicons 
-                        name="heart" 
-                        color={liked ? 'red' : 'gray'} 
-                        size={20} 
+                    <Ionicons
+                        name="heart"
+                        color={liked ? 'red' : 'gray'}
+                        size={20}
                         accessibilityLabel="Likes"
                     />
-                    <Text> {likes > 0 ? `${likes} like${likes > 1 ? 's' : ''}` : 'No likes yet'}</Text>
+                    <Text>
+                        {likes > 0 ? `${likes} like${likes > 1 ? 's' : ''}` : 'No likes yet'}
+                    </Text>
                 </View>
             </View>
         </View>
