@@ -11,13 +11,7 @@ export default function PostsScreen() {
     const [page, setPage] = useState(1);
     const [isMoreData, setIsMoreData] = useState(true);
 
-    const randomColor = () => {
-        return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-    };
-    
     const getPosts = async () => {
-        if (!isMoreData) return;
-
         try {
             const request = {
                 method: 'GET',
@@ -31,15 +25,14 @@ export default function PostsScreen() {
             const data = await response.json();
 
             if (data.length > 0) {
-                setPosts((prevPosts) => [...prevPosts, ...data]);
+                setPosts((prevPosts) => [...prevPosts, ...data]); 
             } else {
                 setIsMoreData(false);
             }
-
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            setLoading(false); 
         }
     };
 
@@ -47,9 +40,15 @@ export default function PostsScreen() {
         getPosts();
     }, [page]);
 
+    const loadMoreData = () => {
+        if (isMoreData) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {isLoading ? (
+            {isLoading && page === 1 ? (
                 <View style={styles.container}>
                     <ActivityIndicator size="large" />
                 </View>
@@ -57,25 +56,22 @@ export default function PostsScreen() {
                 <FlatList
                     data={posts}
                     keyExtractor={({ id }) => id.toString()}
-                    onEndReachedThreshold={0.01}
-                    onEndReached={() => setPage((prevPage) => prevPage + 1)}
+                    onEndReachedThreshold={0.1} 
+                    onEndReached={loadMoreData} 
+                    ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
                     renderItem={({ item }) => (
                         <Post
+                            id={item.user_id}
                             title={item.title}
                             content={item.content}
                             username={item.username}
                             likes={item.likes}
-                            color={randomColor()}
                         />
                     )}
-                    ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
                 />
             ) : (
                 <View style={styles.container}>
                     <Text style={styles.noPostsText}>No posts available</Text>
-                    <Pressable onPress={getPosts}>
-                        <Text>Reload</Text>
-                    </Pressable>
                 </View>
             )}
         </SafeAreaView>
