@@ -10,6 +10,7 @@ import SignUpScreen from './Screens/SignUpScreen';
 import PostsScreen from './Screens/postsScreen';
 import FeedScreen from './Screens/FeedScreen';
 import ProfileScreen from './Screens/ProfileScreen';
+import OthersProfileScreen from './Screens/OthersProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,7 +46,7 @@ function AppTabNavigator() {
       />
 
       <Tab.Screen 
-        name="Profile" 
+        name="My Profile" 
         component={ProfileScreen} 
         options={{
           headerTitleAlign: "center",
@@ -67,6 +68,7 @@ export default function App() {
           <Stack.Screen name="Log In" component={LogInScreen} />
           <Stack.Screen name="Sign Up" component={SignUpScreen} options={styles.noBackButton} />
           <Stack.Screen name="Main App" component={AppTabNavigator} options={styles.noHeader} />
+          <Stack.Screen name="Others Profile" component={OthersProfileScreen} options={{title:"Profile"}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

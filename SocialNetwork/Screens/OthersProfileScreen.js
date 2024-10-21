@@ -5,8 +5,9 @@ import { AuthContext } from '../Components/Context';
 import Post from '../Components/Post';
 
 
-export default function ProfileScreen(){
-    const { token, userId, username } = useContext(AuthContext);
+export default function OthersProfileScreen({route}){
+    const { token, userId } = useContext(AuthContext);
+    const otherUserId = route.params.userId;
     const [isLoading, setLoading] = useState(true);
     const [followerCount, setFollowerCount] = useState('');
     const [followingCount, setFollowingCount] = useState('');
@@ -14,6 +15,7 @@ export default function ProfileScreen(){
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [isMoreData, setIsMoreData] = useState(true);
+    const [username, setUsername] = useState('')
 
     const getAccountInfo = async () =>{
         try {
@@ -25,13 +27,14 @@ export default function ProfileScreen(){
                 },
             };
 
-            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}`, request);
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${otherUserId}`, request);
             const data = await response.json();
 
             if(response.ok){
                 setFollowerCount(data.follower_count);
                 setFollowingCount(data.following_count)
                 setIsFollowing(data.is_following)
+                setUsername(data.username)
             }
 
         } catch (error) {
@@ -51,7 +54,7 @@ export default function ProfileScreen(){
                 },
             };
 
-            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}/posts?page=${page}&limit=10`, request);
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${otherUserId}/posts?page=${page}&limit=10`, request);
             const dataPosts = await response.json();
 
             if (dataPosts.length > 0) {
@@ -83,7 +86,7 @@ export default function ProfileScreen(){
         <SafeAreaView>
             <AccountInfo 
                 currentUserId={userId}
-                id={userId} 
+                id={otherUserId} 
                 username={username} 
                 followerCount={followerCount} 
                 followingCount={followingCount} 

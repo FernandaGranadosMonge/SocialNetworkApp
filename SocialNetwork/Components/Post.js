@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const heroImageToken = 'a8e7ff77d984eb69f8932fcff236d68b';
 const imageCache = {}; 
@@ -21,8 +23,9 @@ const getHeroImage = async (id) => {
     }
 };
 
-const Post = ({ username, content, likes, liked, id }) => {
+const Post = ({ username, content, likes, liked, id}) => {
     const [imageUrl, setImageUrl] = useState(null);
+    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchImage = async () => {
@@ -42,7 +45,9 @@ const Post = ({ username, content, likes, liked, id }) => {
             <View style={styles.postContent}>
                 {imageUrl ? (
                     imageUrl !== '' ? (
-                        <Image source={{ uri: imageUrl }} style={styles.heroImage} />
+                        <TouchableOpacity onPress={() => {navigation.navigate('Others Profile', {userId: id} ) }}>
+                            <Image source={{ uri: imageUrl }} style={styles.heroImage} />
+                        </TouchableOpacity>
                     ) : (
                         <Text>Image could not be loaded</Text>
                     )

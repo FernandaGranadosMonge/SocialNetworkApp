@@ -48,7 +48,7 @@ export default function PostsScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ImageBackground source={require('../assets/whatsappDangerBg.jpg')} imageStyle= {{opacity:0.5}}>
+            <ImageBackground source={require('../assets/whatsappDangerBg.jpg')} imageStyle= {{opacity:0.5}} style={styles.imageBackground}>
                 {isLoading && page === 1 ? (
                     <View style={styles.container}>
                         <ActivityIndicator size="large" />
@@ -81,6 +81,9 @@ export default function PostsScreen() {
 }
 
 const styles = StyleSheet.create({
+    imageBackground: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
