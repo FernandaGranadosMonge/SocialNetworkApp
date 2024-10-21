@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable } from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable, ImageBackground } from 'react-native';
 import { AuthContext } from '../Components/Context';
 
 import Post from '../Components/Post';
@@ -48,32 +48,34 @@ export default function PostsScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {isLoading && page === 1 ? (
-                <View style={styles.container}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : posts.length > 0 ? (
-                <FlatList
-                    data={posts}
-                    keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
-                    onEndReachedThreshold={0.1} 
-                    onEndReached={loadMoreData} 
-                    ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
-                    renderItem={({ item }) => (
-                        <Post
-                            id={item.user_id}
-                            title={item.title}
-                            content={item.content}
-                            username={item.username}
-                            likes={item.likes.length}
-                        />
-                    )}
-                />
-            ) : (
-                <View style={styles.container}>
-                    <Text style={styles.noPostsText}>No posts available</Text>
-                </View>
-            )}
+            <ImageBackground source={require('../assets/whatsappDangerBg.jpg')} imageStyle= {{opacity:0.5}}>
+                {isLoading && page === 1 ? (
+                    <View style={styles.container}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : posts.length > 0 ? (
+                    <FlatList
+                        data={posts}
+                        keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
+                        onEndReachedThreshold={0.1} 
+                        onEndReached={loadMoreData} 
+                        ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
+                        renderItem={({ item }) => (
+                            <Post
+                                id={item.user_id}
+                                title={item.title}
+                                content={item.content}
+                                username={item.username}
+                                likes={item.likes.length}
+                            />
+                        )}
+                    />
+                ) : (
+                    <View style={styles.container}>
+                        <Text style={styles.noPostsText}>No posts available</Text>
+                    </View>
+                )}
+                </ImageBackground>
         </SafeAreaView>
     );
 }

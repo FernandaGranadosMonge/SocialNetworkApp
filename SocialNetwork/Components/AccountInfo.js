@@ -3,7 +3,7 @@ import {Text, View, StyleSheet, Pressable, Image} from 'react-native';
 import Post from './Post';
 
 
-const heroImageToken = process.env.EXPO_PUBLIC_KEY;
+const heroImageToken = 'a8e7ff77d984eb69f8932fcff236d68b';
 const imageCache = {}; 
 
 const getHeroImage = async (id) => {

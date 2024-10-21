@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const heroImageToken = process.env.EXPO_PUBLIC_KEY;
+const heroImageToken = 'a8e7ff77d984eb69f8932fcff236d68b';
 const imageCache = {}; 
 
 const getHeroImage = async (id) => {
@@ -59,7 +59,7 @@ const Post = ({ username, content, likes, liked, id }) => {
                         size={20}
                         accessibilityLabel="Likes"
                     />
-                    <Text>
+                    <Text style={styles.likesText}>
                         {likes > 0 ? `${likes} like${likes > 1 ? 's' : ''}` : 'No likes yet'}
                     </Text>
                 </View>
@@ -76,13 +76,12 @@ const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: '#d4f3d4',
         borderRadius: 10,
-        marginVertical: 8
+        marginVertical: 6
     },
     postContent: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 5,
-        justifyContent: 'space-between',
     },
     postTitle: {
         fontSize: 18,
@@ -101,8 +100,13 @@ const styles = StyleSheet.create({
     heroImage: {
         width: 50,
         height: 50,
-        marginRight: 10,
+        marginRight: 15,
+        borderRadius: 25,
+        marginBottom: 3
     },
+    likesText: {
+        marginLeft: 5
+    }
 });
 
 export default Post;
