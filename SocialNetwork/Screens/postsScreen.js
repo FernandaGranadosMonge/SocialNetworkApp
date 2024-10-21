@@ -98,6 +98,9 @@ export default function PostsScreen( {navigation} ) {
 }
 
 const styles = StyleSheet.create({
+    imageBackground: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',

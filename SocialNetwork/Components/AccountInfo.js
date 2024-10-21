@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {Text, View, StyleSheet, Pressable, Image} from 'react-native';
-import Post from './Post';
-
 
 const heroImageToken = 'a8e7ff77d984eb69f8932fcff236d68b';
 const imageCache = {}; 

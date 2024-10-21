@@ -1,4 +1,4 @@
-import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions} from 'react-native';
+import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions, TouchableOpacity} from 'react-native';
 import React, { useState } from 'react';
 
 const windowWidth = Dimensions.get('window').width;
@@ -97,9 +97,9 @@ export default function SignUpScreen( {navigation} ){
                       placeholder={'Re-enter Password'}
                     />
   
-                    <Pressable style={styles.logInButton} onPress={manageSignUp}>
+                    <TouchableOpacity style={styles.logInButton} onPress={manageSignUp}>
                         <Text style={styles.textButton}>Sign Up</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                   
                     <View style={styles.signUpContainer}>
                         <Text style={styles.question}>Already have an account?</Text>

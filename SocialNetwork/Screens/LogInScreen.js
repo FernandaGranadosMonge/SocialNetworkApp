@@ -1,4 +1,4 @@
-import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions} from 'react-native';
+import { ScrollView, Text, StyleSheet, TextInput, Pressable, View, ImageBackground, ActivityIndicator, Dimensions, TouchableOpacity} from 'react-native';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../Components/Context';
 
@@ -72,9 +72,9 @@ export default function LogInScreen( {navigation} ){
                     placeholder={'Password'}
                 />
 
-                <Pressable style={styles.logInButton} onPress={manageLogin}>
+                <TouchableOpacity style={styles.logInButton} onPress={manageLogin}>
                     <Text style={styles.textButton}>Log In</Text>
-                </Pressable>
+                </TouchableOpacity>
                 
                 <View style={styles.signUpContainer}>
                     <Text style={styles.question}>Don't have an account?</Text>
