@@ -74,6 +74,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
         margin: 5,
+        backgroundColor: '#d4f3d4',
+        borderRadius: 10,
+        marginVertical: 8
     },
     postContent: {
         flexDirection: 'row',

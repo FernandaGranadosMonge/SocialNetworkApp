@@ -12,6 +12,8 @@ export default function ProfileScreen(){
     const [followingCount, setFollowingCount] = useState('');
     const [isFollowing, setIsFollowing] = useState(false);
     const [posts, setPosts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [isMoreData, setIsMoreData] = useState(true);
 
     const getAccountInfo = async () =>{
         try {
@@ -49,21 +51,31 @@ export default function ProfileScreen(){
                 },
             };
 
-            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}/posts?page=1&limit=10`, request);
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/users/${userId}/posts?page=${page}&limit=10`, request);
             const dataPosts = await response.json();
 
-            setPosts(dataPosts || []);
+            if (dataPosts.length > 0) {
+                setPosts((prevPosts) => [...prevPosts, ...dataPosts]); 
+            } else {
+                setIsMoreData(false);
+            }
 
         } catch (error) {
             console.error(error);
-            setPosts([]);
         } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         getPosts();
-    }, []);
+    }, [page]);
+
+    const loadMoreData = () => {
+        if (isMoreData) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
 
     getAccountInfo();
 
@@ -81,17 +93,23 @@ export default function ProfileScreen(){
             <View style={styles.postsContainer}>
                 <Text style={styles.title}>Posts</Text>
 
-                {posts.length > 0 ? (
+                {isLoading && page === 1 ? (
+                    <View style={styles.container}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : posts.length > 0 ? (
                     <FlatList
                         data={posts}
-                        keyExtractor={({ id }) => id.toString()}
+                        keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
+                        onEndReachedThreshold={0.1} 
+                        onEndReached={loadMoreData} 
                         renderItem={({ item }) => (
                             <Post
                                 id={item.user_id}
                                 title={item.title}
                                 content={item.content}
                                 username={item.username}
-                                likes={item.likes}
+                                likes={item.likes.length}
                             />
                         )}
                     />

@@ -55,7 +55,7 @@ export default function PostsScreen() {
             ) : posts.length > 0 ? (
                 <FlatList
                     data={posts}
-                    keyExtractor={({ id }) => id.toString()}
+                    keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
                     onEndReachedThreshold={0.1} 
                     onEndReached={loadMoreData} 
                     ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
@@ -65,7 +65,7 @@ export default function PostsScreen() {
                             title={item.title}
                             content={item.content}
                             username={item.username}
-                            likes={item.likes}
+                            likes={item.likes.length}
                         />
                     )}
                 />
