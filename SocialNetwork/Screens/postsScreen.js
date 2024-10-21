@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 import { AuthContext } from '../Components/Context';
 
 import Post from '../Components/Post';
@@ -11,13 +11,9 @@ export default function PostsScreen( {navigation} ) {
     const [page, setPage] = useState(1);
     const [isMoreData, setIsMoreData] = useState(true);
 
-    const randomColor = () => {
-        return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-    };
-    
     const getPosts = async () => {
         if (!isMoreData) return;
-    
+
         try {
             const request = {
                 method: 'GET',
@@ -31,20 +27,15 @@ export default function PostsScreen( {navigation} ) {
             const data = await response.json();
     
             if (data.length > 0) {
-                // Filter out duplicates by checking if the post id already exists in the current posts state
-                const newPosts = data.filter((newPost) => {
-                    return !posts.some((existingPost) => existingPost.id === newPost.id);
-                });
-    
-                setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+                setPosts((prevPosts) => [...prevPosts, ...data]);
             } else {
                 setIsMoreData(false);
             }
-    
+
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            setLoading(false); 
         }
     };
 
@@ -53,41 +44,55 @@ export default function PostsScreen( {navigation} ) {
         getPosts();
     }, [page]);
 
+    const loadMoreData = () => {
+        if (isMoreData) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {isLoading ? (
-                <View style={styles.container}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : posts.length > 0 ? (
-                <FlatList
-                    data={posts}
-                    keyExtractor={({ id }) => id.toString()}
-                    onEndReachedThreshold={0.01}
-                    onEndReached={() => setPage((prevPage) => prevPage + 1)}
-                    renderItem={({ item }) => (
-                        <Post
-                            title={item.title}
-                            content={item.content}
-                            username={item.username}
-                            likes={item.likes}
-                            color={randomColor()}
+            <View style={{ flex: 1 }}>
+                <ImageBackground 
+                    source={require('../assets/whatsappDangerBg.jpg')} 
+                    imageStyle={{ opacity: 0.5 }} 
+                    style={{ flex: 1 }}
+                >
+                    {isLoading && page === 1 ? (
+                        <View style={styles.container}>
+                            <ActivityIndicator size="large" />
+                        </View>
+                    ) : posts.length > 0 ? (
+                        <FlatList
+                            data={posts}
+                            keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
+                            onEndReachedThreshold={0.1}
+                            onEndReached={loadMoreData}
+                            ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
+                            renderItem={({ item }) => (
+                                <Post
+                                    id={item.user_id}
+                                    title={item.title}
+                                    content={item.content}
+                                    username={item.username}
+                                    likes={item.likes.length}
+                                />
+                            )}
                         />
+                    ) : (
+                        <View style={styles.container}>
+                            <Text style={styles.noPostsText}>No posts available</Text>
+                        </View>
                     )}
-                    ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
-                />
-            ) : (
-                <View style={styles.container}>
-                    <Text style={styles.noPostsText}>No posts available</Text>
-                    <Pressable onPress={getPosts}>
-                        <Text>Reload</Text>
-                    </Pressable>
-                </View>
-            )}
-            <TouchableOpacity style={styles.createPostButton} 
-            onPress={() => {navigation.navigate('Create Post')}}>
-                <Text style={styles.createPostText}>Create New Post</Text>
-            </TouchableOpacity>
+                </ImageBackground>
+
+                <TouchableOpacity 
+                    style={styles.createPostButton} 
+                    onPress={() => { navigation.navigate('Create Post'); }}
+                >
+                    <Text style={styles.createPostText}>Create New Post</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }

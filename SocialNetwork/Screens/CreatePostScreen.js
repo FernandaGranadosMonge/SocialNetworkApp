@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Text, ImageBackground } from 'react-native';
 import { AuthContext } from '../Components/Context';
 
 export default function CreatePostScreen( {navigation} ) {
@@ -49,27 +49,34 @@ export default function CreatePostScreen( {navigation} ) {
             {successMessage ? <Text style={styles.successMessage}>{successMessage}</Text> : null}
             {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
             
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="What's up, danger?"
-                    multiline
-                    value={newContent}
-                    onChangeText={setNewContent}
-                    placeholderTextColor="#aaa"
-                />
-                <TouchableOpacity 
-                style={styles.postButton} 
-                // onPress={createPost}
-                onPress={async () => {
-                    await createPost();
-                    navigation.navigate('Main App', {
-                    screen: 'All Posts', 
-                    params: { refresh: true },
-                })}}>
-                    <Text style={styles.postButtonText}>Post</Text>
-                </TouchableOpacity>
-            </View>
+            <ImageBackground 
+                        source={require('../assets/whatsappDangerBg.jpg')} 
+                        imageStyle={{ opacity: 0.5 }} 
+                        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                    >
+                            
+                <View style={styles.inputContainer}>
+                    
+                    <TextInput
+                        style={styles.input}
+                        placeholder="What's up, danger?"
+                        multiline
+                        value={newContent}
+                        onChangeText={setNewContent}
+                        placeholderTextColor="#aaa"
+                    />
+                    <TouchableOpacity 
+                    style={styles.postButton} 
+                    onPress={async () => {
+                        await createPost();
+                        navigation.navigate('Main App', {
+                        screen: 'All Posts', 
+                        params: { refresh: true },
+                    })}}>
+                        <Text style={styles.postButtonText}>Post</Text>
+                    </TouchableOpacity>
+                </View>
+            </ImageBackground>    
         </SafeAreaView>
     );
 }
@@ -78,8 +85,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f4f4f4',
-        justifyContent: 'center', 
-        alignItems: 'center',    
         padding: 20,
     },
     inputContainer: {

@@ -1,16 +1,58 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {Text, View, StyleSheet, Pressable} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {Text, View, StyleSheet, Pressable, Image} from 'react-native';
 import Post from './Post';
+
+
+const heroImageToken = 'a8e7ff77d984eb69f8932fcff236d68b';
+const imageCache = {}; 
+
+const getHeroImage = async (id) => {
+    if (imageCache[id]) {
+        return imageCache[id];
+    }
+    
+    try {
+        const response = await fetch(`https://superheroapi.com/api/${heroImageToken}/${id}/image`);
+        const data = await response.json();
+        imageCache[id] = data.url;
+        return data.url;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 // currentUserId is the id of the user currently signed in; id is the id of the user who's account is gonna get displayed
 export default function AccountInfo({currentUserId, id, username, followerCount, followingCount, isFollowing}){
+    const [imageUrl, setImageUrl] = useState(null);
+
+    useEffect(() => {
+        const fetchImage = async () => {
+            const url = await getHeroImage(id);
+            if (url) {
+                setImageUrl(url);
+            } else {
+                setImageUrl('');
+
+            }
+        };
+        fetchImage();
+    }, [id]);
+
 
     return (
         <View>
             <View style={styles.infoContainer}>
-
-                <View style={[styles.userIcon, { backgroundColor: 'red' }]}>
-                    <Text style={styles.userIconText}>{username[0].toUpperCase()}</Text>
+                <View style={[styles.userIcon]}>
+                    {imageUrl ? (
+                        imageUrl !== '' ? (
+                            <Image source={{ uri: imageUrl }} style={styles.userIcon} />
+                        ) : (
+                            <Text style={styles.userIconText}>{username[0]}</Text>
+                        )
+                    ) : (
+                        <Text>Loading image...</Text>
+                    )}
                 </View>
 
                 <Text style={styles.username}>{username}</Text>
@@ -41,11 +83,9 @@ const styles = StyleSheet.create({
         paddingVertical: 15
     },
     userIcon: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: 100,
+        height: 100,
+        borderRadius: 50,
     },
     userIconText: {
         color: 'white',

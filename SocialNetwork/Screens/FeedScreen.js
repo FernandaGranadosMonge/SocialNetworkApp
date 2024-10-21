@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable, ImageBackground } from 'react-native';
 import { AuthContext } from '../Components/Context';
 
-export default function FeedScreen() {
+import Post from '../Components/Post';
+
+export default function PostsScreen() {
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
-    const { token, userId, username} = useContext(AuthContext);
-
+    const { token, userId, username } = useContext(AuthContext);
+    const [page, setPage] = useState(1);
+    const [isMoreData, setIsMoreData] = useState(true);
 
     const getPosts = async () => {
         try {
@@ -18,46 +21,61 @@ export default function FeedScreen() {
                 },
             };
 
-            const response = await fetch('https://social-network-v7j7.onrender.com/api/feed?page=1&limit=10', request);
+            const response = await fetch(`https://social-network-v7j7.onrender.com/api/feed?page=${page}&limit=10`, request);
             const data = await response.json();
 
-            setPosts(data || []);
-
+            if (data.length > 0) {
+                setPosts((prevPosts) => [...prevPosts, ...data]); 
+            } else {
+                setIsMoreData(false);
+            }
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            setLoading(false); 
         }
     };
 
     useEffect(() => {
         getPosts();
-    }, []);
+    }, [page]);
 
+    const loadMoreData = () => {
+        if (isMoreData) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {isLoading ? (
-                <View style={styles.container}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : posts.length > 0 ? (
-                <FlatList
-                    data={posts}
-                    keyExtractor={({ id }) => id.toString()}
-                    renderItem={({ item }) => (
-                        <View style={styles.postContainer}>
-                            <Text style={styles.postTitle}>{item.title}</Text>
-                            <Text>{item.content}</Text>
-                            <Text style={styles.postAuthor}>By {item.username}</Text>
-                        </View>
-                    )}
-                />
-            ) : (
-                <View style={styles.container}>
-                    <Text style={styles.noPostsText}>No posts available</Text>
-                </View>
-            )}
+            <ImageBackground source={require('../assets/whatsappDangerBg.jpg')} imageStyle= {{opacity:0.5}}>
+                {isLoading && page === 1 ? (
+                    <View style={styles.container}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : posts.length > 0 ? (
+                    <FlatList
+                        data={posts}
+                        keyExtractor={({ id, created_at }) => `${id}-${created_at}`}
+                        onEndReachedThreshold={0.1} 
+                        onEndReached={loadMoreData} 
+                        ListFooterComponent={isMoreData ? <ActivityIndicator size="small" /> : null}
+                        renderItem={({ item }) => (
+                            <Post
+                                id={item.user_id}
+                                title={item.title}
+                                content={item.content}
+                                username={item.username}
+                                likes={item.likes.length}
+                            />
+                        )}
+                    />
+                ) : (
+                    <View style={styles.container}>
+                        <Text style={styles.noPostsText}>No posts available</Text>
+                    </View>
+                )}
+                </ImageBackground>
         </SafeAreaView>
     );
 }
