@@ -10,6 +10,7 @@ import SignUpScreen from './Screens/SignUpScreen';
 import PostsScreen from './Screens/postsScreen';
 import FeedScreen from './Screens/FeedScreen';
 import ProfileScreen from './Screens/ProfileScreen';
+import CreatePostScreen from './Screens/CreatePostScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -67,6 +68,7 @@ export default function App() {
           <Stack.Screen name="Log In" component={LogInScreen} />
           <Stack.Screen name="Sign Up" component={SignUpScreen} options={styles.noBackButton} />
           <Stack.Screen name="Main App" component={AppTabNavigator} options={styles.noHeader} />
+          <Stack.Screen name="Create Post" component={CreatePostScreen} options={styles.noHeader} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

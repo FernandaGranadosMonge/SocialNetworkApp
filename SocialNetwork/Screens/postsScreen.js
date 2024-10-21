@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable } from 'react-native';
+import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../Components/Context';
 
 import Post from '../Components/Post';
 
-export default function PostsScreen() {
+export default function PostsScreen( {navigation} ) {	
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
     const { token, userId, username } = useContext(AuthContext);
@@ -17,7 +17,7 @@ export default function PostsScreen() {
     
     const getPosts = async () => {
         if (!isMoreData) return;
-
+    
         try {
             const request = {
                 method: 'GET',
@@ -26,16 +26,21 @@ export default function PostsScreen() {
                     Authorization: `Bearer ${token}`,
                 },
             };
-
+    
             const response = await fetch(`https://social-network-v7j7.onrender.com/api/posts?page=${page}&limit=10`, request);
             const data = await response.json();
-
+    
             if (data.length > 0) {
-                setPosts((prevPosts) => [...prevPosts, ...data]);
+                // Filter out duplicates by checking if the post id already exists in the current posts state
+                const newPosts = data.filter((newPost) => {
+                    return !posts.some((existingPost) => existingPost.id === newPost.id);
+                });
+    
+                setPosts((prevPosts) => [...prevPosts, ...newPosts]);
             } else {
                 setIsMoreData(false);
             }
-
+    
         } catch (error) {
             console.error(error);
         } finally {
@@ -43,6 +48,7 @@ export default function PostsScreen() {
         }
     };
 
+    
     useEffect(() => {
         getPosts();
     }, [page]);
@@ -78,6 +84,10 @@ export default function PostsScreen() {
                     </Pressable>
                 </View>
             )}
+            <TouchableOpacity style={styles.createPostButton} 
+            onPress={() => {navigation.navigate('Create Post')}}>
+                <Text style={styles.createPostText}>Create New Post</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -106,5 +116,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         marginVertical: 20,
+    },
+    createPostButton: {
+        padding: 10,
+        backgroundColor: '#007AFF',
+        borderRadius: 5,
+        margin: 10,
+        alignItems: 'center',
+    },
+    createPostText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
